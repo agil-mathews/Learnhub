@@ -1,25 +1,42 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:learnhub/admin/service/admin_service.dart';
 import 'package:learnhub/common/widgets/video_player.dart';
-import 'package:learnhub/models/course.dart';
+import 'package:learnhub/models/product.dart';
+import 'admin_home.dart';
 
-class MyContent extends StatefulWidget {
-  const MyContent({
+class AdminContent extends StatefulWidget {
+  const AdminContent({
     super.key,
     required this.course,
   });
-  final Course course;
+  final Product course;
 
   @override
-  State<MyContent> createState() => _MyContentState();
+  State<AdminContent> createState() => _AdminContentState();
 }
 
-class _MyContentState extends State<MyContent> {
-  Course get course => widget.course;
+class _AdminContentState extends State<AdminContent> {
+  Product get course => widget.course;
 
-  
+  void deletePendings(BuildContext context) {
+    AdminService().deletePendings(widget.course.name);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Admin_home(),
+        ));
+  }
 
-  
+  void acceptCourse(BuildContext context) async {
+    AdminService().addCourse(widget.course);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Admin_home(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,10 +92,6 @@ class _MyContentState extends State<MyContent> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Text('₹${widget.course.price}',style: const TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
-                    const SizedBox(
-                      height: 20,
-                    ),
                     ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
@@ -91,36 +104,11 @@ class _MyContentState extends State<MyContent> {
                       onPressed: () {
                         // Add logic to handle checkout button press
                       },
-                      child: const Text(
-                        'Buy Now ',
-                        style: TextStyle(color: Colors.white),
+                      child: Text(
+                        'Rs ${widget.course.price} ',
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
-                    const SizedBox(height: 10,),
-                    Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    OutlinedButton(onPressed: (){},
-                    
-                    style: ButtonStyle(
-                      backgroundColor: const MaterialStatePropertyAll(Colors.grey),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(0))),
-                      minimumSize: MaterialStateProperty.all(const Size(165, 50)),
-                    ), 
-                    child: const Text('Add to Cart',style: TextStyle(color: Colors.black),),
-                    ),
-                    // const SizedBox(width: 5,),
-                    OutlinedButton(onPressed: (){},
-                    style: ButtonStyle(
-                      backgroundColor: const MaterialStatePropertyAll(Colors.grey),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(0))),
-                       minimumSize: MaterialStateProperty.all(const Size(165, 50)),
-                    ), 
-                    child: const Text('Add to Wishlist',style: TextStyle(color: Colors.black),),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20,),
                     const Text(
                       'Requirements',
                       style:
@@ -161,13 +149,19 @@ class _MyContentState extends State<MyContent> {
               color: Colors.white,
               child: Row(
                 children: [
-                  const Align(
+                  Align(
                     alignment: Alignment.bottomLeft,
                     child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text(
-                        'Accept',
-                        style: TextStyle(color: Colors.white),
+                      padding: const EdgeInsets.all(16.0),
+                      child: ElevatedButton(
+                        onPressed: () => acceptCourse(context),
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.green)),
+                        child: const Text(
+                          'Accept',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
@@ -178,12 +172,12 @@ class _MyContentState extends State<MyContent> {
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: ElevatedButton(
-                        onPressed: () => (),
+                        onPressed: () => deletePendings(context),
                         style: ButtonStyle(
                             backgroundColor:
                                 MaterialStateProperty.all(Colors.red)),
                         child: const Text(
-                          'Buy Now',
+                          'Reject',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),

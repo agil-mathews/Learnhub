@@ -4,6 +4,11 @@ import 'package:learnhub/pages/content.dart';
 import 'package:learnhub/pages/mylearning.dart';
 import 'package:learnhub/pages/search.dart';
 import 'package:learnhub/pages/wishlist.dart';
+import 'package:learnhub/providers/course_provider.dart';
+import 'package:learnhub/services/auth_services.dart';
+import 'package:provider/provider.dart';
+
+import 'common/widgets/course_card.dart';
 
 class MyHome extends StatefulWidget {
   const MyHome({Key? key}) : super(key: key);
@@ -18,9 +23,9 @@ class _MyHomeState extends State<MyHome> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     const MySearch(),
-    Mylearning(),
-    MyWishlist(),
-    MyAccount(),
+    const Mylearning(),
+    const MyWishlist(),
+    const MyAccount(),
   ];
 
   void _onItemTapped(int index) {
@@ -32,9 +37,6 @@ class _MyHomeState extends State<MyHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   automaticallyImplyLeading: false,
-      // ),
       body: Center(
         child: _selectedIndex == 0
             ? const MyHomeContent()
@@ -80,8 +82,23 @@ class MyHomeContent extends StatefulWidget {
 }
 
 class _MyHomeContentState extends State<MyHomeContent> {
+  final AuthService authService = AuthService();
+
+  // @override
+  // void initState() {
+  //     super.initState();
+  //     Provider.of<UserProvider>(context, listen: false); // Access provider without rebuild
+  //     getAllCourses();
+  // }
+
+  // void getAllCourses(){
+  //   authService.getAllCourses(context);
+  // }
+
   @override
   Widget build(BuildContext context) {
+    // log('allcourses: $allcourses');
+
     // Customize the content of your home page here
     return Scaffold(
       // appBar: AppBar(),
@@ -95,164 +112,101 @@ class _MyHomeContentState extends State<MyHomeContent> {
                 padding: const EdgeInsets.all(28.0),
                 child: Image.asset('assets/79132090_m_normal_none.jpg'),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'A world of learning  from ₹449',
-                  style: TextStyle(
-                      fontSize: 45, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 45, fontWeight: FontWeight.w500),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   "Expand your horizons with learning that's worldwide",
-                  style: TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.w400),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'Trending Courses',
-                  style:TextStyle(
-                      fontSize: 34, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 34, fontWeight: FontWeight.w500),
                 ),
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Mycontent(),));
-                      },
-                      child: Column(
-                        
-                        children: [
-                          
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: NewWidget(),
-                          ),
-                          const Text(
-                              'Flutter & Dart- The Complete \n Guide [2024 Edition]'),
-                          const Text('Academind by Maximillian'),
-                          const Row(
-                            children: [
-                              Text('4.5'),
-                              Icon(
-                                Icons.star,
-                                color: Colors.yellow,
+              //     SingleChildScrollView(
+              //       scrollDirection: Axis.horizontal,
+              //       child: Row(
+              //   children:  allcourses.map((course) {
+              //      GestureDetector(
+              //       onTap: () {
+              //         Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //             builder: (context) =>  const Mycontent(),
+              //           ),
+              //         );
+              //       },
+              //       child: CourseCard(
+              //         thumbnailUrl: course.imagePath ?? '',
+              //         title: course.name ?? 'No Title',
+              //         author: course.userName ?? 'No Author',
+              //         price: course.price.toDouble(),
+              //       ),
+              //     );
+              //   }
+              //   )
+
+              // ),
+              //     ),
+              FutureBuilder(
+                  future: authService.getAllCourses(context),
+                  builder: (BuildContext context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.error != null) {
+                      return const Center(child: Text('An error occurred!'));
+                    } else {
+                      return Consumer<CourseProvider>(
+                        builder: (ctx, courseProvider, _) {
+                          if (courseProvider.course.isEmpty) {
+                            return const Center(
+                                child: Text('No courses available.'));
+                          } else {
+                            return SizedBox(
+                              // height: MediaQuery.of(context).size.height * 0.15, // 25% of screen height
+                              height: 290,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: courseProvider.course.length,
+                                itemBuilder: (ctx, index) {
+                                  final course = courseProvider.course[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => MyContent(
+                                            course: course,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: CourseCard(
+                                      thumbnailUrl: course.imagePath ?? '',
+                                      title: course.name ?? 'No Title',
+                                      author: course.userName ?? 'No Author',
+                                      price: course.price.toDouble(),
+                                    ),
+                                  );
+                                },
                               ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                              ),
-                              Icon(
-                                Icons.star_half,
-                                color: Colors.yellow,
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            'assets/1708340_7108_5.jpg',
-                            width: 220,
-                            height: 150,
-                          ),
-                        ),
-                        const Text(
-                            'Flutter & Dart- The Complete \nGuide [2024 Edition]'),
-                        const Text('Academind by Maximillian'),
-                        const Row(
-                          children: [
-                            Text('4.5'),
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                            ),
-                            Icon(
-                              Icons.star_half,
-                              color: Colors.yellow,
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            'assets/1708340_7108_5.jpg',
-                            width: 220,
-                            height: 150,
-                          ),
-                        ),
-                        const Text(
-                            'Flutter & Dart- The Complete \n Guide [2024 Edition]'),
-                        const Text('Academind by Maximillian'),
-                        const Row(
-                          children: [
-                            Text('4.5'),
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                            ),
-                            Icon(
-                              Icons.star_half,
-                              color: Colors.yellow,
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.all(18.0),
-                      child: Text('See all'),
-                    )
-                  ],
-                ),
-              ),
+                            );
+                          }
+                        },
+                      );
+                    }
+                  }),
+
               const SizedBox(
                 height: 10.0,
               ),
@@ -361,12 +315,11 @@ class _MyHomeContentState extends State<MyHomeContent> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'Popular Among Development',
-                  style: TextStyle(
-                      fontSize: 34, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 34, fontWeight: FontWeight.w500),
                 ),
               ),
               SingleChildScrollView(
@@ -500,7 +453,9 @@ class _MyHomeContentState extends State<MyHomeContent> {
                   ],
                 ),
               ),
-              const SizedBox(height: 50,),
+              const SizedBox(
+                height: 50,
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
@@ -514,39 +469,48 @@ class _MyHomeContentState extends State<MyHomeContent> {
                   ),
                   child: Column(
                     children: [
-                      const SizedBox(height: 20,),
-                      const Text('Top Companies Trust LearnHub',style: TextStyle(fontSize: 25),),
-                      const SizedBox(height: 10.0,),
-                       Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.asset('assets/Box,_Inc._logo.svg.png',
-                        width: 100,
-                        height: 80,),
+                      const SizedBox(
+                        height: 20,
                       ),
-                      Image.asset('assets/Box,_Inc._logo.svg.png',
-                        width: 100,
-                        height: 80,),
-                        Image.asset('assets/png-transparent-nasdaq-composite-nasdaq-nordic-exchange-traded-note-market-miscellaneous-blue-angle-thumbnail.png',
-                        width: 100,
-                        height: 80,),
-                      
+                      const Text(
+                        'Top Companies Trust LearnHub',
+                        style: TextStyle(fontSize: 25),
+                      ),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.asset(
+                              'assets/Box,_Inc._logo.svg.png',
+                              width: 100,
+                              height: 80,
+                            ),
+                          ),
+                          Image.asset(
+                            'assets/Box,_Inc._logo.svg.png',
+                            width: 100,
+                            height: 80,
+                          ),
+                          Image.asset(
+                            'assets/png-transparent-nasdaq-composite-nasdaq-nordic-exchange-traded-note-market-miscellaneous-blue-angle-thumbnail.png',
+                            width: 100,
+                            height: 80,
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                    ],
-                  ),
-                  
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'Trending Courses',
-                  style: TextStyle(
-                      fontSize: 34, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 34, fontWeight: FontWeight.w500),
                 ),
               ),
               SingleChildScrollView(
@@ -680,10 +644,10 @@ class _MyHomeContentState extends State<MyHomeContent> {
                   ],
                 ),
               ),
-
             ],
           ),
         ),
+        // ignore: prefer_const_constructors
       ),
     );
   }

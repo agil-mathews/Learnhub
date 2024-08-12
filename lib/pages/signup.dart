@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:learnhub/services/auth_services.dart';
 
 class MySignup extends StatefulWidget {
   const MySignup({Key? key}) : super(key: key);
@@ -14,8 +15,10 @@ class _MySignupState extends State<MySignup> {
   final _phonenumberController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmpasswordController = TextEditingController();
+  final AuthService authService = AuthService();
   bool _obscureText = true;
   bool _obscureText1 = true;
+  
 
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -26,18 +29,11 @@ class _MySignupState extends State<MySignup> {
     return null;
   }
 
-  // String? _validateEmail(String? value) {
-  //   if (value!.isEmpty ||
-  //       !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-  //     return "Enter a valid email";
-  //   }
-  //   return null;
-  // }
 
   String? _validatePhoneNumber(String? value) {
     if (value!.isEmpty ||
         !RegExp(
-                r'^\+?([0-9]{1,3})\)?[-.● ]?([0-9]{3})[-.● ]?([0-9]{3})[-.● ]?([0-9]{4})$')
+                r'^(\d{10})$')
             .hasMatch(value)) {
       return "Enter a valid phone number";
     }
@@ -61,6 +57,26 @@ class _MySignupState extends State<MySignup> {
     return null;
   }
 
+  void signUpUser(){
+    
+    authService.signUpUser(
+      context: context, 
+      name: _nameController.text, 
+      email: _emailController.text, 
+      phone: _phonenumberController.text, 
+      password: _passwordController.text);
+  }
+
+@override
+//   void dispose(){
+//   super.dispose();
+//   _nameController.dispose();
+//   _emailController.dispose();
+//   _phonenumberController.dispose();
+//   _passwordController.dispose();
+//   _confirmpasswordController.dispose();
+
+// }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,19 +89,19 @@ class _MySignupState extends State<MySignup> {
               child: Column(
                 children: [
                    RichText(
-                     text: TextSpan(
+                     text: const TextSpan(
                        style: TextStyle(
                          fontSize: 36,
                          fontWeight: FontWeight.bold
                        ),
-                       children: const [
+                       children: [
                          TextSpan(
                            text: 'Learn',
                            style: TextStyle(color: Colors.black),
                          ),
                          TextSpan(
                            text: ' Hub',
-                           style: TextStyle(color:const Color.fromARGB(255, 136, 86, 244)),
+                           style: TextStyle(color:Color.fromARGB(255, 136, 86, 244)),
                          ),
                        ],
                      ),
@@ -93,7 +109,7 @@ class _MySignupState extends State<MySignup> {
                   const SizedBox(
                     height: 20.0,
                   ),
-                  Text(
+                  const Text(
                     'Here to get Welcomed',
                    
                   ),
@@ -193,18 +209,14 @@ class _MySignupState extends State<MySignup> {
                     height: 60,
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      // Validate form and submit if valid
-                      // if (_formKey.currentState!.validate()) {
-                      //   // Form is valid, perform actions
-                      // }
-                    },
+                    onPressed: signUpUser,
+                     
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
                       fixedSize: const Size(250, 50),
                       backgroundColor: const Color.fromARGB(255, 136, 86, 244),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Create Account',
                      
                     ),

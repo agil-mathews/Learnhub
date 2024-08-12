@@ -115,7 +115,7 @@ class _MycheckoutState extends State<Mycheckout> {
       ),
       iconColor: Colors.cyan,
     ),
-    Divider(),
+    const Divider(),
     ListTile(
       title: const Text('Option 2'),
       leading: Radio<int>(
@@ -131,7 +131,7 @@ class _MycheckoutState extends State<Mycheckout> {
         },
       ),
     ),
-    Divider(),
+    const Divider(),
     ListTile(
       title: const Text('Option 2'),
       leading: Radio<int>(
@@ -147,7 +147,7 @@ class _MycheckoutState extends State<Mycheckout> {
         },
       ),
     ),
-    Divider(),
+    const Divider(),
     ListTile(
       title: const Text('Option 2'),
       leading: Radio<int>(
@@ -167,31 +167,31 @@ class _MycheckoutState extends State<Mycheckout> {
   ],
 ),
                 ),
-     Row(
+     const Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text('Total:'),
         Text('Rs.449'),
       ],
      ),
-     Text('By completing your purchase you agree to these Terms of Service'),
+     const Text('By completing your purchase you agree to these Terms of Service'),
 
      Container(
             // color: Colors.grey[200],
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.deepPurple),
-                    minimumSize: MaterialStateProperty.all(Size(350, 50)),
+                    minimumSize: MaterialStateProperty.all(const Size(350, 50)),
                   ),
                   onPressed: () {
                     // Add logic to handle checkout button press
                    
                   },
-                  child: Text('Complete Checkout',style: TextStyle(color: Colors.white),),
+                  child: const Text('Complete Checkout',style: TextStyle(color: Colors.white),),
                 ),
               ],
             ),

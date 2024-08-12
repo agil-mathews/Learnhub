@@ -1,4 +1,11 @@
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:learnhub/instructor/screens/instructor_home.dart';
+import 'package:learnhub/providers/user_provider.dart';
+import 'package:learnhub/services/auth_services.dart';
+import 'package:provider/provider.dart';
 
 class MyAccount extends StatefulWidget {
   const MyAccount({super.key});
@@ -8,8 +15,20 @@ class MyAccount extends StatefulWidget {
 }
 
 class _MyAccountState extends State<MyAccount> {
+
+void signOutUser(BuildContext context){
+AuthService().signOut(context);
+}
+
+
   @override
   Widget build(BuildContext context) {
+
+    final user = Provider.of<UserProvider>(context).user;
+    
+    log(user.token!);
+    log(user.name!);
+    
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -27,103 +46,115 @@ class _MyAccountState extends State<MyAccount> {
           ),
         ),
       ),
-      body: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 50.0,
-          ),
-          Center(
-            child: Icon(Icons.account_circle, size: 125),
-          ),
-          Center(
-              child: Text(
-            'User Name',
-            style: TextStyle(fontSize: 20),
-          )),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.mail_outline, size: 35),
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                'User Email',
-                style: TextStyle(fontSize: 20),
-              ),
-              SizedBox(
-                width: 30,
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Center(
-              child: Text(
-            'Switch to Instructor View',
-            style: TextStyle(fontSize: 20, color: Colors.deepPurple),
-          )),
-          SizedBox(
-            height: 50,
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body:  SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 50.0,
+            ),
+            const Center(
+              child: Icon(Icons.account_circle, size: 125),
+            ),
+            Center(
+                child: Text(
+              user.name ?? 'No Name',
+              style: const TextStyle(fontSize: 20),
+            )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Video Preferences',
-                  style: TextStyle(fontSize: 15),
+                const Icon(Icons.mail_outline, size: 35),
+                const SizedBox(
+                  width: 10,
                 ),
                 Text(
-                  'Download Options',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                  user.email ?? 'No email',
+                  style: const TextStyle(fontSize: 20),
                 ),
-                SizedBox(
-                  height: 20,
+                const SizedBox(
+                  width: 30,
                 ),
-                Text('Account Settings'),
-                Text(
-                  'Account Security',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                ),
-                Text(
-                  'Email notification preferences',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text('Help and support'),
-                Text(
-                  'About LearnHub',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                ),
-                Text(
-                  'FAQ',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                ),
-                Text(
-                  'Share the app',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                ),
-                SizedBox(
-                  height: 100,
-                ),
-                Center(
-                    child: Text(
-                  'Sign out',
-                  style: TextStyle(
-                      color: Colors.deepPurple,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ))
               ],
             ),
-          )
-        ],
+            const SizedBox(
+              height: 10,
+            ),
+            GestureDetector(
+              onTap: (){
+    Navigator.push( 
+          context,
+          MaterialPageRoute(builder: (context) =>  const Instructor_home()),
+      );              },
+              child: const Center(
+                  child: Text(
+                'Switch to Instructor View',
+                style: TextStyle(fontSize: 20, color: Colors.deepPurple),
+              )),
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Video Preferences',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                  const Text(
+                    'Download Options',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text('Account Settings'),
+                  const Text(
+                    'Account Security',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                  ),
+                  const Text(
+                    'Email notification preferences',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text('Help and support'),
+                  const Text(
+                    'About LearnHub',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                  ),
+                  const Text(
+                    'FAQ',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                  ),
+                  const Text(
+                    'Share the app',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                  ),
+                  const SizedBox(
+                    height: 100,
+                  ),
+                  Center(
+                      child: GestureDetector(
+                        onTap: () =>signOutUser(context),
+                        child: const Text(
+                                            'Sign out',
+                                            style: TextStyle(
+                          color: Colors.deepPurple,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                                          ),
+                      ))
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -81,8 +81,8 @@ class _MycartState extends State<Mycart> {
                         ),
                       ],
                     ),
-                    SizedBox(width: 80,),
-                    Text('Rs.449')
+                    // const SizedBox(width: 80,),
+                    // const Text('Rs.449')
                   ],
                 ),
               ],
@@ -91,22 +91,17 @@ class _MycartState extends State<Mycart> {
           // Fixed footer
           Container(
             // color: Colors.grey[200],
-            padding: EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.deepPurple),
-                    minimumSize: MaterialStateProperty.all(Size(350, 50)),
-                  ),
-                  onPressed: () {
-                    // Add logic to handle checkout button press
-                    Navigator.push(context, MaterialPageRoute(builder:(context) => Mycheckout()));
-                  },
-                  child: Text('Checkout',style: TextStyle(color: Colors.white),),
-                ),
-              ],
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.deepPurple),
+                minimumSize: MaterialStateProperty.all(const Size(350, 50)),
+              ),
+              onPressed: () {
+                // Add logic to handle checkout button press
+                Navigator.push(context, MaterialPageRoute(builder:(context) => const Mycheckout()));
+              },
+              child: const Text('Checkout',style: TextStyle(color: Colors.white),),
             ),
           ),
         ],

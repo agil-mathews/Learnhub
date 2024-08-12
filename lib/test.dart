@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Flutter code sample for [ExpansionPanelList].
 
@@ -10,10 +9,10 @@ class ExpansionPanelListExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return  const MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Text('data',style: GoogleFonts.roboto(),),
+          child: Text('data'),
         ),
       ),
     );
